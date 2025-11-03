@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Cliente</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body class="dashboard-page">
+    <!-- Barra de navegação superior -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <h2>CARPA Contabilidade</h2>
+        </div>
+        <div class="navbar-user">
+            <span class="user-badge cliente-badge">Cliente</span>
+            <span class="user-email" th:text="${email}"></span>
+            <form th:action="@{/logout}" method="post" class="logout-form">
+                <button type="submit" class="btn-logout">Sair</button>
+            </form>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Menu lateral -->
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <h3>Menu</h3>
+                <ul>
+                    <li class="menu-item active">
+                        <span class="menu-icon">&#128200;</span>
+                        <span>Início</span>
+                    </li>
+                    <li class="menu-item">
+                        <span class="menu-icon">&#128193;</span>
+                        <span>Meus Documentos</span>
+                    </li>
+                    <li class="menu-item">
+                        <span class="menu-icon">&#128176;</span>
+                        <span>Faturas</span>
+                    </li>
+                    <li class="menu-item">
+                        <span class="menu-icon">&#128202;</span>
+                        <span>Relatórios</span>
+                    </li>
+                    <li class="menu-item">
+                        <span class="menu-icon">&#128172;</span>
+                        <span>Suporte</span>
+                    </li>
+                    <li class="menu-item">
+                        <span class="menu-icon">&#128100;</span>
+                        <span>Meu Perfil</span>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Conteúdo principal -->
+        <main class="main-content">
+            <div class="welcome-section">
+                <h1>Bem-vindo ao Portal do Cliente</h1>
+                <p>Acompanhe seus serviços contábeis de forma simples e eficiente</p>
+            </div>
+
+            <!-- Cards de informações -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">&#128193;</div>
+                    <div class="stat-content">
+                        <h3>Documentos</h3>
+                        <p class="stat-number">12</p>
+                        <p class="stat-label">disponíveis</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">&#128176;</div>
+                    <div class="stat-content">
+                        <h3>Faturas</h3>
+                        <p class="stat-number">2</p>
+                        <p class="stat-label">pendentes</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">&#9989;</div>
+                    <div class="stat-content">
+                        <h3>Status</h3>
+                        <p class="stat-number stat-success">Em dia</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">&#128172;</div>
+                    <div class="stat-content">
+                        <h3>Mensagens</h3>
+                        <p class="stat-number">3</p>
+                        <p class="stat-label">não lidas</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção de serviços -->
+            <div class="features-section">
+                <h2>Serviços Disponíveis</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">&#128193;</div>
+                        <h3>Documentos</h3>
+                        <p>Acesse seus documentos contábeis e fiscais</p>
+                        <button class="btn-feature">Ver Documentos</button>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">&#128176;</div>
+                        <h3>Faturas e Pagamentos</h3>
+                        <p>Consulte e pague suas faturas online</p>
+                        <button class="btn-feature">Ver Faturas</button>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">&#128202;</div>
+                        <h3>Relatórios Mensais</h3>
+                        <p>Visualize seus relatórios contábeis</p>
+                        <button class="btn-feature">Ver Relatórios</button>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">&#128172;</div>
+                        <h3>Suporte</h3>
+                        <p>Entre em contato com nossa equipe</p>
+                        <button class="btn-feature">Abrir Ticket</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Avisos importantes -->
+            <div class="alerts-section">
+                <h2>Avisos Importantes</h2>
+                <div class="alert-item">
+                    <span class="alert-icon info">&#9432;</span>
+                    <div class="alert-content">
+                        <h4>Prazo de Entrega de Documentos</h4>
+                        <p>Lembre-se de enviar seus documentos até o dia 15 de cada mês.</p>
+                    </div>
+                </div>
+                <div class="alert-item">
+                    <span class="alert-icon success">&#10004;</span>
+                    <div class="alert-content">
+                        <h4>Declaração Entregue</h4>
+                        <p>Sua declaração mensal foi entregue com sucesso aos órgãos competentes.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

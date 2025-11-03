@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Carpa Contabilidade</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-box">
+            <!-- Logo da empresa -->
+            <div class="logo">
+                <h1>CARPA</h1>
+                <p class="logo-subtitle">Contabilidade</p>
+            </div>
+
+            <!-- Mensagens de erro e sucesso -->
+            <div th:if="${errorMessage}" class="alert alert-error">
+                <span>&#9888;</span>
+                <span th:text="${errorMessage}"></span>
+            </div>
+
+            <div th:if="${successMessage}" class="alert alert-success">
+                <span>&#10004;</span>
+                <span th:text="${successMessage}"></span>
+            </div>
+
+            <!-- Formulário de login -->
+            <form th:action="@{/login}" method="post" class="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email"
+                           id="email"
+                           name="email"
+                           placeholder="Digite seu email"
+                           required
+                           autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label for="senha">Senha</label>
+                    <input type="password"
+                           id="senha"
+                           name="senha"
+                           placeholder="Digite sua senha"
+                           required>
+                </div>
+
+                <button type="submit" class="btn-login">Entrar</button>
+            </form>
+
+            <!-- Informações adicionais -->
+            <div class="login-footer">
+                <p>&copy; 2024 Carpa Contabilidade. Todos os direitos reservados.</p>
+            </div>
+        </div>
+
+        <!-- Informação de teste -->
+        <div class="test-credentials">
+            <h3>Credenciais de Teste</h3>
+            <p><strong>Admin:</strong> admin@carpa.com / admin123</p>
+            <p><strong>Cliente:</strong> cliente@teste.com / cliente123</p>
+        </div>
+    </div>
+</body>
+</html>

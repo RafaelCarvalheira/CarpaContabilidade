@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Administrador</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body class="dashboard-page">
+    <!-- Barra de navegação superior -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <h2>CARPA Contabilidade</h2>
+        </div>
+        <div class="navbar-user">
+            <span class="user-badge admin-badge">Administrador</span>
+            <span class="user-email" th:text="${email}"></span>
+            <form th:action="@{/logout}" method="post" class="logout-form">
+                <button type="submit" class="btn-logout">Sair</button>
+            </form>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Menu lateral -->
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <h3>Menu</h3>
+                <ul>
+                    <li class="menu-item active">
+                        <span class="menu-icon">&#128200;</span>
+                        <span>Dashboard</span>
+                    </li>
+                    <li class="menu-item">
+                        <span class="menu-icon">&#128101;</span>
+                        <span>Clientes</span>
+                    </li>
+                    <li class="menu-item">
+                        <span class="menu-icon">&#128202;</span>
+                        <span>Relatórios</span>
+                    </li>
+                    <li class="menu-item">
+                        <span class="menu-icon">&#128193;</span>
+                        <span>Documentos</span>
+                    </li>
+                    <li class="menu-item">
+                        <span class="menu-icon">&#128176;</span>
+                        <span>Financeiro</span>
+                    </li>
+                    <li class="menu-item">
+                        <span class="menu-icon">&#9881;</span>
+                        <span>Configurações</span>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Conteúdo principal -->
+        <main class="main-content">
+            <div class="welcome-section">
+                <h1>Bem-vindo ao Painel Administrativo</h1>
+                <p>Gerencie todos os aspectos da Carpa Contabilidade</p>
+            </div>
+
+            <!-- Cards de estatísticas -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">&#128101;</div>
+                    <div class="stat-content">
+                        <h3>Total de Clientes</h3>
+                        <p class="stat-number">24</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">&#128193;</div>
+                    <div class="stat-content">
+                        <h3>Documentos Pendentes</h3>
+                        <p class="stat-number">8</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">&#128202;</div>
+                    <div class="stat-content">
+                        <h3>Relatórios do Mês</h3>
+                        <p class="stat-number">15</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">&#9989;</div>
+                    <div class="stat-content">
+                        <h3>Tarefas Concluídas</h3>
+                        <p class="stat-number">42</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção de funcionalidades -->
+            <div class="features-section">
+                <h2>Acesso Rápido</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">&#128101;</div>
+                        <h3>Gerenciar Clientes</h3>
+                        <p>Adicione, edite ou remova clientes do sistema</p>
+                        <button class="btn-feature">Acessar</button>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">&#128202;</div>
+                        <h3>Gerar Relatórios</h3>
+                        <p>Crie relatórios contábeis personalizados</p>
+                        <button class="btn-feature">Acessar</button>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">&#128193;</div>
+                        <h3>Gerenciar Documentos</h3>
+                        <p>Organize e gerencie todos os documentos</p>
+                        <button class="btn-feature">Acessar</button>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">&#9881;</div>
+                        <h3>Configurações</h3>
+                        <p>Configure preferências do sistema</p>
+                        <button class="btn-feature">Acessar</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

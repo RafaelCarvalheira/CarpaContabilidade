@@ -1,0 +1,218 @@
+/* ===================================
+   Estilos da Página de Login
+   =================================== */
+
+.login-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    padding: 2rem 1rem;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 450px;
+}
+
+.login-box {
+    background-color: var(--bg-white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    padding: 3rem 2.5rem;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Logo */
+.logo {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.logo h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.25rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
+/* Formulário de Login */
+.login-form {
+    margin-top: 2rem;
+}
+
+.login-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.login-form input {
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+}
+
+.login-form input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.15);
+}
+
+/* Botão de Login */
+.btn-login {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    color: var(--text-white);
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    margin-top: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(30, 58, 138, 0.3);
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+}
+
+.btn-login:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 8px rgba(30, 58, 138, 0.2);
+}
+
+/* Footer do Login */
+.login-footer {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+    text-align: center;
+}
+
+.login-footer p {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+/* Credenciais de Teste */
+.test-credentials {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+    box-shadow: var(--shadow-md);
+    animation: fadeInUp 0.6s ease-out 0.2s both;
+}
+
+.test-credentials h3 {
+    font-size: 1rem;
+    color: var(--primary-color);
+    margin-bottom: 0.75rem;
+    text-align: center;
+    font-weight: 700;
+}
+
+.test-credentials p {
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    margin: 0.5rem 0;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+}
+
+.test-credentials strong {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+/* Alertas na página de login */
+.login-box .alert {
+    margin-bottom: 1.5rem;
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+    .login-box {
+        padding: 2rem 1.5rem;
+    }
+
+    .logo h1 {
+        font-size: 2.5rem;
+    }
+
+    .logo-subtitle {
+        font-size: 0.95rem;
+    }
+
+    .btn-login {
+        font-size: 1rem;
+        padding: 0.875rem;
+    }
+
+    .test-credentials {
+        padding: 1rem;
+    }
+
+    .test-credentials p {
+        font-size: 0.8rem;
+    }
+}
+
+/* Efeitos de foco aprimorados */
+.login-form input::placeholder {
+    color: #94a3b8;
+    transition: all var(--transition-normal);
+}
+
+.login-form input:focus::placeholder {
+    opacity: 0.5;
+}
+
+/* Animação de carregamento no botão (opcional) */
+.btn-login.loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.btn-login.loading::after {
+    content: "...";
+    animation: dots 1.5s infinite;
+}
+
+@keyframes dots {
+    0%, 20% { content: "."; }
+    40% { content: ".."; }
+    60%, 100% { content: "..."; }
+}
