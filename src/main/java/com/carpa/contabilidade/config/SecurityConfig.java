@@ -74,8 +74,8 @@ public class SecurityConfig {
         http
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(authorize -> authorize
-                        // Permite acesso público aos recursos estáticos e página de login
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/login").permitAll()
+                        // Permite acesso público aos recursos estáticos, landing page e login
+                        .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/login").permitAll()
                         // Apenas ADMIN pode acessar rotas /admin/**
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         // Apenas CLIENTE pode acessar rotas /cliente/**

@@ -11,19 +11,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
 
     /**
-     * Redireciona para a página apropriada baseado no tipo de usuário.
-     * Se não autenticado, redireciona para login.
+     * Exibe a landing page para visitantes não autenticados.
+     * Redireciona usuários autenticados para seus dashboards apropriados.
      *
      * @param authentication Informações do usuário autenticado (pode ser null)
-     * @return Redirecionamento para a página apropriada
+     * @return Nome da view (landing page) ou redirecionamento
      */
     @GetMapping("/")
     public String home(Authentication authentication) {
+        // Se não autenticado, mostra a landing page
         if (authentication == null) {
-            return "redirect:/login";
+            return "index";
         }
 
-        // Redireciona baseado nas autoridades do usuário
+        // Se autenticado, redireciona baseado nas autoridades do usuário
         boolean isAdmin = authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
