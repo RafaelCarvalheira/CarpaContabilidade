@@ -127,6 +127,15 @@
     font-weight: 500;
 }
 
+.menu-item a {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    width: 100%;
+}
+
 .menu-item:hover {
     background-color: var(--bg-light);
     color: var(--primary-color);
@@ -297,6 +306,8 @@
     font-weight: 600;
     cursor: pointer;
     transition: all var(--transition-normal);
+    text-decoration: none;
+    display: inline-block;
 }
 
 .btn-feature:hover {

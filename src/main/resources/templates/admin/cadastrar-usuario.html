@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Usuário - Administrador</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/cadastro-usuario.css}">
+</head>
+<body class="dashboard-page">
+    <!-- Barra de navegação superior -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <h2>CARPA Contabilidade</h2>
+        </div>
+        <div class="navbar-user">
+            <span class="user-badge admin-badge">Administrador</span>
+            <span class="user-email" th:text="${email}"></span>
+            <form th:action="@{/logout}" method="post" class="logout-form">
+                <button type="submit" class="btn-logout">Sair</button>
+            </form>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Menu lateral -->
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <h3>Menu</h3>
+                <ul>
+                    <li class="menu-item">
+                        <a th:href="@{/admin/dashboard}">
+                            <span class="menu-icon">&#128200;</span>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="menu-item active">
+                        <a th:href="@{/admin/cadastrar-usuario}">
+                            <span class="menu-icon">&#128101;</span>
+                            <span>Cadastrar Usuário</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <span class="menu-icon">&#128101;</span>
+                        <span>Clientes</span>
+                    </li>
+                    <li class="menu-item">
+                        <span class="menu-icon">&#128202;</span>
+                        <span>Relatórios</span>
+                    </li>
+                    <li class="menu-item">
+                        <span class="menu-icon">&#128193;</span>
+                        <span>Documentos</span>
+                    </li>
+                    <li class="menu-item">
+                        <span class="menu-icon">&#128176;</span>
+                        <span>Financeiro</span>
+                    </li>
+                    <li class="menu-item">
+                        <span class="menu-icon">&#9881;</span>
+                        <span>Configurações</span>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Conteúdo principal -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1>Cadastrar Novo Usuário</h1>
+                <p>Adicione novos administradores ou clientes ao sistema</p>
+            </div>
+
+            <!-- Mensagens de sucesso e erro -->
+            <div th:if="${successMessage}" class="alert alert-success">
+                <span>&#10004;</span>
+                <span th:text="${successMessage}"></span>
+            </div>
+
+            <div th:if="${errorMessage}" class="alert alert-error">
+                <span>&#9888;</span>
+                <span th:text="${errorMessage}"></span>
+            </div>
+
+            <!-- Formulário de cadastro -->
+            <div class="form-container">
+                <form th:action="@{/admin/cadastrar-usuario}" method="post" class="cadastro-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nome">Nome Completo <span class="required">*</span></label>
+                            <input type="text"
+                                   id="nome"
+                                   name="nome"
+                                   placeholder="Digite o nome completo"
+                                   required
+                                   autofocus>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email">Email <span class="required">*</span></label>
+                            <input type="email"
+                                   id="email"
+                                   name="email"
+                                   placeholder="Digite o email"
+                                   required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="senha">Senha <span class="required">*</span></label>
+                            <input type="password"
+                                   id="senha"
+                                   name="senha"
+                                   placeholder="Digite a senha"
+                                   minlength="6"
+                                   required>
+                            <small class="form-help">Mínimo de 6 caracteres</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirmarSenha">Confirmar Senha <span class="required">*</span></label>
+                            <input type="password"
+                                   id="confirmarSenha"
+                                   name="confirmarSenha"
+                                   placeholder="Confirme a senha"
+                                   minlength="6"
+                                   required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="tipoUsuario">Tipo de Usuário <span class="required">*</span></label>
+                            <select id="tipoUsuario" name="tipoUsuario" required>
+                                <option value="">Selecione o tipo</option>
+                                <option value="ADMIN">Administrador</option>
+                                <option value="CLIENTE">Cliente</option>
+                            </select>
+                            <small class="form-help">
+                                Administradores têm acesso total ao sistema
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ativo">Status <span class="required">*</span></label>
+                            <select id="ativo" name="ativo" required>
+                                <option value="true" selected>Ativo</option>
+                                <option value="false">Inativo</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <a th:href="@{/admin/dashboard}" class="btn-secondary">
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn-primary">
+                            Cadastrar Usuário
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Lista de usuários cadastrados -->
+            <div class="usuarios-section" th:if="${usuarios != null}">
+                <h2>Usuários Cadastrados</h2>
+                <div class="table-container">
+                    <table class="usuarios-table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Tipo</th>
+                                <th>Status</th>
+                                <th>Data de Criação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="usuario : ${usuarios}">
+                                <td th:text="${usuario.nome}"></td>
+                                <td th:text="${usuario.email}"></td>
+                                <td>
+                                    <span class="badge"
+                                          th:classappend="${usuario.tipoUsuario == T(com.carpa.contabilidade.model.TipoUsuario).ADMIN} ? 'badge-admin' : 'badge-cliente'"
+                                          th:text="${usuario.tipoUsuario == T(com.carpa.contabilidade.model.TipoUsuario).ADMIN} ? 'Admin' : 'Cliente'">
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge"
+                                          th:classappend="${usuario.ativo} ? 'badge-active' : 'badge-inactive'"
+                                          th:text="${usuario.ativo} ? 'Ativo' : 'Inativo'">
+                                    </span>
+                                </td>
+                                <td th:text="${#temporals.format(usuario.dataCriacao, 'dd/MM/yyyy HH:mm')}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Validação de confirmação de senha
+        document.querySelector('.cadastro-form').addEventListener('submit', function(e) {
+            const senha = document.getElementById('senha').value;
+            const confirmarSenha = document.getElementById('confirmarSenha').value;
+
+            if (senha !== confirmarSenha) {
+                e.preventDefault();
+                alert('As senhas não coincidem. Por favor, verifique.');
+                document.getElementById('confirmarSenha').focus();
+            }
+        });
+    </script>
+</body>
+</html>

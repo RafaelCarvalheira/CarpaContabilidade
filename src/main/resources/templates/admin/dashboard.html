@@ -29,12 +29,16 @@
                 <h3>Menu</h3>
                 <ul>
                     <li class="menu-item active">
-                        <span class="menu-icon">&#128200;</span>
-                        <span>Dashboard</span>
+                        <a th:href="@{/admin/dashboard}">
+                            <span class="menu-icon">&#128200;</span>
+                            <span>Dashboard</span>
+                        </a>
                     </li>
                     <li class="menu-item">
-                        <span class="menu-icon">&#128101;</span>
-                        <span>Clientes</span>
+                        <a th:href="@{/admin/cadastrar-usuario}">
+                            <span class="menu-icon">&#128101;</span>
+                            <span>Cadastrar Usuário</span>
+                        </a>
                     </li>
                     <li class="menu-item">
                         <span class="menu-icon">&#128202;</span>
@@ -104,6 +108,13 @@
                 <div class="features-grid">
                     <div class="feature-card">
                         <div class="feature-icon">&#128101;</div>
+                        <h3>Cadastrar Usuário</h3>
+                        <p>Adicione novos administradores ou clientes</p>
+                        <a th:href="@{/admin/cadastrar-usuario}" class="btn-feature">Acessar</a>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">&#128101;</div>
                         <h3>Gerenciar Clientes</h3>
                         <p>Adicione, edite ou remova clientes do sistema</p>
                         <button class="btn-feature">Acessar</button>
@@ -120,13 +131,6 @@
                         <div class="feature-icon">&#128193;</div>
                         <h3>Gerenciar Documentos</h3>
                         <p>Organize e gerencie todos os documentos</p>
-                        <button class="btn-feature">Acessar</button>
-                    </div>
-
-                    <div class="feature-card">
-                        <div class="feature-icon">&#9881;</div>
-                        <h3>Configurações</h3>
-                        <p>Configure preferências do sistema</p>
                         <button class="btn-feature">Acessar</button>
                     </div>
                 </div>

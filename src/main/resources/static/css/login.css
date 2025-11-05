@@ -105,6 +105,37 @@
     box-shadow: 0 4px 8px rgba(30, 58, 138, 0.2);
 }
 
+/* Botão de Retorno ao Site */
+.back-to-site {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+.btn-back {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all var(--transition-normal);
+}
+
+.btn-back:hover {
+    background-color: var(--primary-color);
+    color: var(--text-white);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
+}
+
+.btn-back:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(30, 58, 138, 0.15);
+}
+
 /* Footer do Login */
 .login-footer {
     margin-top: 2.5rem;
@@ -178,6 +209,11 @@
     .btn-login {
         font-size: 1rem;
         padding: 0.875rem;
+    }
+
+    .btn-back {
+        font-size: 0.875rem;
+        padding: 0.625rem 1.25rem;
     }
 
     .test-credentials {
