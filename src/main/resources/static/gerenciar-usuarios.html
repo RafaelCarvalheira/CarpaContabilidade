@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Usuários</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/gerenciar-usuarios-api.css">
+</head>
+<body class="api-page">
+    <!-- Header -->
+    <header class="api-header">
+        <div class="container">
+            <h1>Gerenciar Usuários</h1>
+            <p>Adicione, edite, visualize e remova usuários do sistema</p>
+            <a href="/admin/dashboard" class="btn-voltar">← Voltar ao Dashboard</a>
+        </div>
+    </header>
+
+    <!-- Container principal -->
+    <div class="container">
+        <!-- Alertas -->
+        <div id="alertContainer"></div>
+
+        <!-- Formulário -->
+        <div class="form-section">
+            <h2 id="formTitle">Adicionar Novo Usuário</h2>
+            <form id="usuarioForm">
+                <input type="hidden" id="usuarioId">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nome">Nome Completo *</label>
+                        <input type="text" id="nome" required placeholder="Digite o nome completo">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" required placeholder="Digite o email">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="senha">Senha *</label>
+                        <input type="password" id="senha" placeholder="Digite a senha (mín. 6 caracteres)">
+                        <small class="form-help">Deixe em branco para manter a senha atual (apenas edição)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tipoUsuario">Tipo de Usuário *</label>
+                        <select id="tipoUsuario" required>
+                            <option value="">Selecione</option>
+                            <option value="ADMIN">Administrador</option>
+                            <option value="CLIENTE">Cliente</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ativo">Status *</label>
+                        <select id="ativo" required>
+                            <option value="true">Ativo</option>
+                            <option value="false">Inativo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" id="btnCancelar" class="btn-secondary" style="display: none;">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        Salvar Usuário
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Tabela de usuários -->
+        <div class="table-section">
+            <h2>Usuários Cadastrados</h2>
+            <div id="loadingMessage" class="loading">Carregando usuários...</div>
+            <div class="table-container">
+                <table id="tabelaUsuarios">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Tipo</th>
+                            <th>Status</th>
+                            <th>Data de Criação</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usuariosTableBody">
+                        <!-- Preenchido via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação -->
+    <div id="modalConfirmacao" class="modal">
+        <div class="modal-content">
+            <h3>Confirmar Exclusão</h3>
+            <p>Tem certeza que deseja excluir este usuário?</p>
+            <p><strong id="nomeUsuarioExcluir"></strong></p>
+            <div class="modal-actions">
+                <button type="button" id="btnCancelarModal" class="btn-secondary">Cancelar</button>
+                <button type="button" id="btnConfirmarExclusao" class="btn-danger">Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // VARIÁVEIS GLOBAIS
+        // ==========================================
+        const API_URL = '/api/usuarios';
+        let usuarioParaExcluir = null;
+
+        // ==========================================
+        // ELEMENTOS DO DOM
+        // ==========================================
+        const form = document.getElementById('usuarioForm');
+        const formTitle = document.getElementById('formTitle');
+        const usuarioIdInput = document.getElementById('usuarioId');
+        const nomeInput = document.getElementById('nome');
+        const emailInput = document.getElementById('email');
+        const senhaInput = document.getElementById('senha');
+        const tipoUsuarioSelect = document.getElementById('tipoUsuario');
+        const ativoSelect = document.getElementById('ativo');
+        const btnCancelar = document.getElementById('btnCancelar');
+        const alertContainer = document.getElementById('alertContainer');
+        const loadingMessage = document.getElementById('loadingMessage');
+        const usuariosTableBody = document.getElementById('usuariosTableBody');
+
+        // Modal
+        const modal = document.getElementById('modalConfirmacao');
+        const btnCancelarModal = document.getElementById('btnCancelarModal');
+        const btnConfirmarExclusao = document.getElementById('btnConfirmarExclusao');
+        const nomeUsuarioExcluir = document.getElementById('nomeUsuarioExcluir');
+
+        // ==========================================
+        // FUNÇÕES DE ALERTA
+        // ==========================================
+        function mostrarAlerta(mensagem, tipo = 'success') {
+            const alerta = document.createElement('div');
+            alerta.className = `alert alert-${tipo}`;
+            alerta.textContent = mensagem;
+            alertContainer.appendChild(alerta);
+
+            // Remove o alerta após 5 segundos
+            setTimeout(() => {
+                alerta.remove();
+            }, 5000);
+        }
+
+        // ==========================================
+        // FUNÇÃO PARA CARREGAR USUÁRIOS (READ)
+        // ==========================================
+        async function carregarUsuarios() {
+            try {
+                loadingMessage.style.display = 'block';
+                const response = await fetch(API_URL);
+
+                if (!response.ok) {
+                    throw new Error('Erro ao carregar usuários');
+                }
+
+                const usuarios = await response.json();
+                renderizarTabela(usuarios);
+                loadingMessage.style.display = 'none';
+
+            } catch (error) {
+                console.error('Erro:', error);
+                mostrarAlerta('Erro ao carregar usuários: ' + error.message, 'error');
+                loadingMessage.textContent = 'Erro ao carregar usuários';
+            }
+        }
+
+        // ==========================================
+        // FUNÇÃO PARA RENDERIZAR TABELA
+        // ==========================================
+        function renderizarTabela(usuarios) {
+            usuariosTableBody.innerHTML = '';
+
+            if (usuarios.length === 0) {
+                usuariosTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center;">Nenhum usuário cadastrado</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            usuarios.forEach(usuario => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${usuario.id}</td>
+                    <td>${usuario.nome}</td>
+                    <td>${usuario.email}</td>
+                    <td>
+                        <span class="badge badge-${usuario.tipoUsuario === 'ADMIN' ? 'admin' : 'cliente'}">
+                            ${usuario.tipoUsuario === 'ADMIN' ? 'Admin' : 'Cliente'}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge badge-${usuario.ativo ? 'active' : 'inactive'}">
+                            ${usuario.ativo ? 'Ativo' : 'Inativo'}
+                        </span>
+                    </td>
+                    <td>${formatarData(usuario.dataCriacao)}</td>
+                    <td class="acoes">
+                        <button onclick="editarUsuario(${usuario.id})" class="btn-editar" title="Editar">
+                            ✏️
+                        </button>
+                        <button onclick="confirmarExclusao(${usuario.id}, '${usuario.nome}')" class="btn-excluir" title="Excluir">
+                            🗑️
+                        </button>
+                    </td>
+                `;
+                usuariosTableBody.appendChild(tr);
+            });
+        }
+
+        // ==========================================
+        // FUNÇÃO PARA FORMATAR DATA
+        // ==========================================
+        function formatarData(dataString) {
+            if (!dataString) return '-';
+            const data = new Date(dataString);
+            return data.toLocaleString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // ==========================================
+        // FUNÇÃO PARA CRIAR/ATUALIZAR USUÁRIO (CREATE/UPDATE)
+        // ==========================================
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const usuarioId = usuarioIdInput.value;
+            const isEdicao = usuarioId !== '';
+
+            // Validação da senha
+            if (!isEdicao && senhaInput.value.length < 6) {
+                mostrarAlerta('A senha deve ter no mínimo 6 caracteres!', 'error');
+                return;
+            }
+
+            const usuario = {
+                nome: nomeInput.value,
+                email: emailInput.value,
+                tipoUsuario: tipoUsuarioSelect.value,
+                ativo: ativoSelect.value === 'true'
+            };
+
+            // Adiciona senha apenas se foi preenchida
+            if (senhaInput.value) {
+                usuario.senha = senhaInput.value;
+            }
+
+            try {
+                const url = isEdicao ? `${API_URL}/${usuarioId}` : API_URL;
+                const method = isEdicao ? 'PUT' : 'POST';
+
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(usuario)
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(errorText);
+                }
+
+                mostrarAlerta(
+                    isEdicao ? 'Usuário atualizado com sucesso!' : 'Usuário criado com sucesso!',
+                    'success'
+                );
+
+                limparFormulario();
+                carregarUsuarios();
+
+            } catch (error) {
+                console.error('Erro:', error);
+                mostrarAlerta('Erro: ' + error.message, 'error');
+            }
+        });
+
+        // ==========================================
+        // FUNÇÃO PARA EDITAR USUÁRIO
+        // ==========================================
+        async function editarUsuario(id) {
+            try {
+                const response = await fetch(`${API_URL}/${id}`);
+
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar usuário');
+                }
+
+                const usuario = await response.json();
+
+                // Preenche o formulário
+                usuarioIdInput.value = usuario.id;
+                nomeInput.value = usuario.nome;
+                emailInput.value = usuario.email;
+                senhaInput.value = ''; // Não exibe a senha
+                senhaInput.placeholder = 'Deixe em branco para manter a senha atual';
+                senhaInput.removeAttribute('required');
+                tipoUsuarioSelect.value = usuario.tipoUsuario;
+                ativoSelect.value = usuario.ativo.toString();
+
+                // Atualiza interface
+                formTitle.textContent = 'Editar Usuário';
+                btnCancelar.style.display = 'inline-block';
+
+                // Scroll para o formulário
+                form.scrollIntoView({ behavior: 'smooth' });
+
+            } catch (error) {
+                console.error('Erro:', error);
+                mostrarAlerta('Erro ao carregar usuário para edição: ' + error.message, 'error');
+            }
+        }
+
+        // ==========================================
+        // FUNÇÃO PARA CONFIRMAR EXCLUSÃO
+        // ==========================================
+        function confirmarExclusao(id, nome) {
+            usuarioParaExcluir = id;
+            nomeUsuarioExcluir.textContent = nome;
+            modal.style.display = 'flex';
+        }
+
+        // ==========================================
+        // FUNÇÃO PARA EXCLUIR USUÁRIO (DELETE)
+        // ==========================================
+        btnConfirmarExclusao.addEventListener('click', async () => {
+            if (!usuarioParaExcluir) return;
+
+            try {
+                const response = await fetch(`${API_URL}/${usuarioParaExcluir}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao excluir usuário');
+                }
+
+                mostrarAlerta('Usuário excluído com sucesso!', 'success');
+                carregarUsuarios();
+                fecharModal();
+
+            } catch (error) {
+                console.error('Erro:', error);
+                mostrarAlerta('Erro ao excluir usuário: ' + error.message, 'error');
+            }
+        });
+
+        // ==========================================
+        // FUNÇÕES DO MODAL
+        // ==========================================
+        function fecharModal() {
+            modal.style.display = 'none';
+            usuarioParaExcluir = null;
+        }
+
+        btnCancelarModal.addEventListener('click', fecharModal);
+
+        // Fecha modal ao clicar fora
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                fecharModal();
+            }
+        });
+
+        // ==========================================
+        // FUNÇÃO PARA LIMPAR FORMULÁRIO
+        // ==========================================
+        function limparFormulario() {
+            form.reset();
+            usuarioIdInput.value = '';
+            senhaInput.placeholder = 'Digite a senha (mín. 6 caracteres)';
+            senhaInput.setAttribute('required', 'required');
+            formTitle.textContent = 'Adicionar Novo Usuário';
+            btnCancelar.style.display = 'none';
+        }
+
+        btnCancelar.addEventListener('click', limparFormulario);
+
+        // ==========================================
+        // INICIALIZAÇÃO
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            carregarUsuarios();
+        });
+    </script>
+</body>
+</html>

@@ -62,4 +62,56 @@ public class UsuarioService {
     public boolean existePorEmail(String email) {
         return usuarioRepository.existsByEmail(email);
     }
+
+    /**
+     * Busca um usuário pelo ID.
+     *
+     * @param id ID do usuário
+     * @return Optional contendo o usuário se encontrado
+     */
+    public Optional<Usuario> buscarPorId(Long id) {
+        return usuarioRepository.findById(id);
+    }
+
+    /**
+     * Atualiza um usuário existente.
+     * Se a senha for fornecida (não vazia), ela será criptografada.
+     *
+     * @param id ID do usuário a ser atualizado
+     * @param usuarioAtualizado Dados atualizados do usuário
+     * @return Usuario atualizado
+     * @throws RuntimeException se o usuário não for encontrado
+     */
+    @Transactional
+    public Usuario atualizar(Long id, Usuario usuarioAtualizado) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado com ID: " + id));
+
+        // Atualiza os campos
+        usuario.setNome(usuarioAtualizado.getNome());
+        usuario.setEmail(usuarioAtualizado.getEmail());
+        usuario.setTipoUsuario(usuarioAtualizado.getTipoUsuario());
+        usuario.setAtivo(usuarioAtualizado.getAtivo());
+
+        // Só atualiza a senha se uma nova senha foi fornecida
+        if (usuarioAtualizado.getSenha() != null && !usuarioAtualizado.getSenha().isEmpty()) {
+            usuario.setSenha(passwordEncoder.encode(usuarioAtualizado.getSenha()));
+        }
+
+        return usuarioRepository.save(usuario);
+    }
+
+    /**
+     * Deleta um usuário pelo ID.
+     *
+     * @param id ID do usuário a ser deletado
+     * @throws RuntimeException se o usuário não for encontrado
+     */
+    @Transactional
+    public void deletar(Long id) {
+        if (!usuarioRepository.existsById(id)) {
+            throw new RuntimeException("Usuário não encontrado com ID: " + id);
+        }
+        usuarioRepository.deleteById(id);
+    }
 }

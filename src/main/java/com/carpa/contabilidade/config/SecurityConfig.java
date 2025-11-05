@@ -76,12 +76,18 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         // Permite acesso público aos recursos estáticos, landing page e login
                         .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/login").permitAll()
-                        // Apenas ADMIN pode acessar rotas /admin/**
+                        // Apenas ADMIN pode acessar rotas /admin/**, API REST e página de gerenciamento
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/**").hasRole("ADMIN")
+                        .requestMatchers("/gerenciar-usuarios.html").hasRole("ADMIN")
                         // Apenas CLIENTE pode acessar rotas /cliente/**
                         .requestMatchers("/cliente/**").hasRole("CLIENTE")
                         // Todas as outras requisições requerem autenticação
                         .anyRequest().authenticated()
+                )
+                // Desabilita CSRF para rotas da API REST
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/api/**")
                 )
                 .formLogin(form -> form
                         // Configurações da página de login
