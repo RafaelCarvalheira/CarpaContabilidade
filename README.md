@@ -284,10 +284,10 @@ Um arquivo de exemplo está incluído: `exemplo_dados_maio_2024.csv`
 ![Dashboard Cliente](docs/screenshots/dashboard_cliente.png)
 
 ### Upload de Documentos
-![Upload](docs/screenshots/upload_documentos.png)
+![Upload](docs/screenshots/upload_doc.png)
 
 ### Dashboard de Relatórios
-![Relatórios](docs/screenshots/relatorios_dashboard.png)
+![Relatórios](docs/screenshots/relatorio.png)
 
 *Mais screenshots disponíveis na documentação completa.*
 
