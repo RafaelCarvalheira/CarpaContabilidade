@@ -433,7 +433,7 @@ Este projeto é de uso acadêmico e pertence ao Instituto Militar de Engenharia 
 
 <div align="center">
 
-**Desenvolvido com 💚💛 no Instituto Militar de Engenharia**
+
 
 ![IME](https://img.shields.io/badge/IME-Instituto%20Militar%20de%20Engenharia-green?style=for-the-badge)
 
