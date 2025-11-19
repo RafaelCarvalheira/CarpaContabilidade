@@ -49,6 +49,4 @@ uploads/
 !exemplo_dados_maio_2024.csv
 
 # Pasta de documentação (screenshots podem ser grandes)
-docs/screenshots/*.png
-docs/screenshots/*.jpg
-!docs/screenshots/.gitkeep
+
