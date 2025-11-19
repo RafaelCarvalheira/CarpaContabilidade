@@ -32,17 +32,17 @@
                         <span class="menu-icon">&#128200;</span>
                         <span>Início</span>
                     </li>
-                    <li class="menu-item">
+                    <li class="menu-item" onclick="window.location.href='/cliente/upload-documento'">
                         <span class="menu-icon">&#128193;</span>
-                        <span>Meus Documentos</span>
+                        <span>Enviar Documento</span>
+                    </li>
+                    <li class="menu-item" onclick="window.location.href='/cliente/relatorios-mensais'">
+                        <span class="menu-icon">&#128202;</span>
+                        <span>Relatórios Mensais</span>
                     </li>
                     <li class="menu-item">
                         <span class="menu-icon">&#128176;</span>
                         <span>Faturas</span>
-                    </li>
-                    <li class="menu-item">
-                        <span class="menu-icon">&#128202;</span>
-                        <span>Relatórios</span>
                     </li>
                     <li class="menu-item">
                         <span class="menu-icon">&#128172;</span>
@@ -69,8 +69,8 @@
                     <div class="stat-icon">&#128193;</div>
                     <div class="stat-content">
                         <h3>Documentos</h3>
-                        <p class="stat-number">12</p>
-                        <p class="stat-label">disponíveis</p>
+                        <p class="stat-number" th:text="${totalDocumentos}">0</p>
+                        <p class="stat-label">enviados</p>
                     </div>
                 </div>
 
@@ -78,8 +78,7 @@
                     <div class="stat-icon">&#128176;</div>
                     <div class="stat-content">
                         <h3>Faturas</h3>
-                        <p class="stat-number">2</p>
-                        <p class="stat-label">pendentes</p>
+                        <p class="stat-number">Em breve</p>
                     </div>
                 </div>
 
@@ -87,7 +86,7 @@
                     <div class="stat-icon">&#9989;</div>
                     <div class="stat-content">
                         <h3>Status</h3>
-                        <p class="stat-number stat-success">Em dia</p>
+                        <p class="stat-number">Em breve</p>
                     </div>
                 </div>
 
@@ -95,8 +94,7 @@
                     <div class="stat-icon">&#128172;</div>
                     <div class="stat-content">
                         <h3>Mensagens</h3>
-                        <p class="stat-number">3</p>
-                        <p class="stat-label">não lidas</p>
+                        <p class="stat-number">Em breve</p>
                     </div>
                 </div>
             </div>
@@ -107,30 +105,34 @@
                 <div class="features-grid">
                     <div class="feature-card">
                         <div class="feature-icon">&#128193;</div>
-                        <h3>Documentos</h3>
-                        <p>Acesse seus documentos contábeis e fiscais</p>
-                        <button class="btn-feature">Ver Documentos</button>
+                        <h3>Enviar Documento</h3>
+                        <p>Faça upload de seus arquivos CSV/Excel mensais</p>
+                        <button class="btn-feature" onclick="window.location.href='/cliente/upload-documento'">
+                            Enviar Agora
+                        </button>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">&#128202;</div>
+                        <h3>Relatórios Mensais</h3>
+                        <p>Visualize seus relatórios contábeis com gráficos</p>
+                        <button class="btn-feature" onclick="window.location.href='/cliente/relatorios-mensais'">
+                            Ver Relatórios
+                        </button>
                     </div>
 
                     <div class="feature-card">
                         <div class="feature-icon">&#128176;</div>
                         <h3>Faturas e Pagamentos</h3>
                         <p>Consulte e pague suas faturas online</p>
-                        <button class="btn-feature">Ver Faturas</button>
-                    </div>
-
-                    <div class="feature-card">
-                        <div class="feature-icon">&#128202;</div>
-                        <h3>Relatórios Mensais</h3>
-                        <p>Visualize seus relatórios contábeis</p>
-                        <button class="btn-feature">Ver Relatórios</button>
+                        <button class="btn-feature">Em Breve</button>
                     </div>
 
                     <div class="feature-card">
                         <div class="feature-icon">&#128172;</div>
                         <h3>Suporte</h3>
                         <p>Entre em contato com nossa equipe</p>
-                        <button class="btn-feature">Abrir Ticket</button>
+                        <button class="btn-feature">Em Breve</button>
                     </div>
                 </div>
             </div>

@@ -40,3 +40,15 @@ logs/
 # Application
 application-local.properties
 application-dev.properties
+
+# Uploads (arquivos enviados pelos usuários)
+uploads/
+
+# Arquivos temporários do projeto
+*.csv
+!exemplo_dados_maio_2024.csv
+
+# Pasta de documentação (screenshots podem ser grandes)
+docs/screenshots/*.png
+docs/screenshots/*.jpg
+!docs/screenshots/.gitkeep
