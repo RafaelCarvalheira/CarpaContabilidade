@@ -20,7 +20,7 @@
 - **Rafael Carvalheira** - Desenvolvimento Full Stack
 - **Marcell Parra** - Desenvolvimento Full Stack
 
-**Orientador:** Cap Vanzan
+**Professor:** Cap Vanzan
 **Disciplina:** Laboratório de Programação II
 **Instituição:** Instituto Militar de Engenharia (IME)
 **Ano:** 2025
@@ -428,15 +428,6 @@ Este é um projeto acadêmico desenvolvido para a disciplina de **Laboratório d
 ## 📄 Licença
 
 Este projeto é de uso acadêmico e pertence ao Instituto Militar de Engenharia (IME).
-
----
-
-## 📞 Contato
-
-Para questões sobre o projeto:
-- **Instituição:** Instituto Militar de Engenharia (IME)
-- **Disciplina:** Laboratório de Programação II
-- **Professor:** Cap Vanzan
 
 ---
 
