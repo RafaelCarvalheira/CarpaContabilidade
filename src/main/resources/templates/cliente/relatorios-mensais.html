@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios Mensais - Cliente</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        .relatorio-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .filtros-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .filtros-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 15px;
+            align-items: end;
+        }
+
+        .filtro-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .filtro-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        .btn-filtrar {
+            padding: 12px 30px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-filtrar:hover {
+            background: #2980b9;
+        }
+
+        .relatorios-lista {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .relatorio-item {
+            padding: 20px;
+            border-bottom: 1px solid #ecf0f1;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .relatorio-item:hover {
+            background: #f8f9fa;
+        }
+
+        .relatorio-item-info h3 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .relatorio-item-meta {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .btn-visualizar {
+            background: #27ae60;
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-visualizar:hover {
+            background: #229954;
+        }
+
+        .dashboard-section {
+            display: none;
+        }
+
+        .dashboard-section.show {
+            display: block;
+        }
+
+        .kpis-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .kpi-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .kpi-label {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .kpi-valor {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .kpi-positivo {
+            color: #27ae60;
+        }
+
+        .kpi-negativo {
+            color: #e74c3c;
+        }
+
+        .kpi-neutro {
+            color: #3498db;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .chart-card h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .chart-full {
+            grid-column: 1 / -1;
+        }
+
+        .tabela-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+
+        .tabela-card h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .valor-positivo {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .valor-negativo {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+
+        .no-relatorios {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+
+        .no-relatorios-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body class="dashboard-page">
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <h2>CARPA Contabilidade</h2>
+        </div>
+        <div class="navbar-user">
+            <span class="user-badge cliente-badge">Cliente</span>
+            <span class="user-email" th:text="${email}"></span>
+            <form th:action="@{/logout}" method="post" class="logout-form">
+                <button type="submit" class="btn-logout">Sair</button>
+            </form>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <h3>Menu</h3>
+                <ul>
+                    <li class="menu-item" onclick="window.location.href='/cliente/dashboard'">
+                        <span class="menu-icon">&#128200;</span>
+                        <span>Início</span>
+                    </li>
+                    <li class="menu-item" onclick="window.location.href='/cliente/upload-documento'">
+                        <span class="menu-icon">&#128193;</span>
+                        <span>Enviar Documento</span>
+                    </li>
+                    <li class="menu-item active">
+                        <span class="menu-icon">&#128202;</span>
+                        <span>Relatórios Mensais</span>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="relatorio-container">
+                <h1>&#128202; Relatórios Mensais</h1>
+
+                <!-- Filtros -->
+                <div class="filtros-section">
+                    <div class="filtros-row">
+                        <div class="filtro-group">
+                            <label>Mês</label>
+                            <select id="filtroMes">
+                                <option value="">Todos</option>
+                                <option value="1">Janeiro</option>
+                                <option value="2">Fevereiro</option>
+                                <option value="3">Março</option>
+                                <option value="4">Abril</option>
+                                <option value="5">Maio</option>
+                                <option value="6">Junho</option>
+                                <option value="7">Julho</option>
+                                <option value="8">Agosto</option>
+                                <option value="9">Setembro</option>
+                                <option value="10">Outubro</option>
+                                <option value="11">Novembro</option>
+                                <option value="12">Dezembro</option>
+                            </select>
+                        </div>
+                        <div class="filtro-group">
+                            <label>Ano</label>
+                            <select id="filtroAno">
+                                <option value="">Todos</option>
+                            </select>
+                        </div>
+                        <div></div>
+                        <button class="btn-filtrar" onclick="filtrarRelatorios()">Filtrar</button>
+                    </div>
+                </div>
+
+                <!-- Lista de Relatórios -->
+                <div class="relatorios-lista" id="relatoriosLista">
+                    <h2>Selecione um Relatório</h2>
+                    <div id="listaContainer">
+                        <p>Carregando relatórios...</p>
+                    </div>
+                </div>
+
+                <!-- Dashboard do Relatório -->
+                <div class="dashboard-section" id="dashboardSection">
+                    <h2>Dashboard - <span id="tituloRelatorio"></span></h2>
+
+                    <!-- KPIs -->
+                    <div class="kpis-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-label">RECEITA TOTAL</div>
+                            <div class="kpi-valor kpi-positivo" id="kpiReceita">R$ 0,00</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">DESPESA TOTAL</div>
+                            <div class="kpi-valor kpi-negativo" id="kpiDespesa">R$ 0,00</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">SALDO</div>
+                            <div class="kpi-valor" id="kpiSaldo">R$ 0,00</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">MARGEM DE LUCRO</div>
+                            <div class="kpi-valor kpi-neutro" id="kpiMargem">0%</div>
+                        </div>
+                    </div>
+
+                    <!-- Gráficos -->
+                    <div class="charts-grid">
+                        <div class="chart-card">
+                            <h3>Despesas por Categoria</h3>
+                            <canvas id="chartDespesasCategoria"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <h3>Receitas por Categoria</h3>
+                            <canvas id="chartReceitasCategoria"></canvas>
+                        </div>
+                        <div class="chart-card chart-full">
+                            <h3>Receitas vs Despesas</h3>
+                            <canvas id="chartReceitasDespesas"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Tabelas -->
+                    <div class="tabela-card">
+                        <h3>Top 10 Receitas</h3>
+                        <table id="tabelaTop10Receitas">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Descrição</th>
+                                    <th>Categoria</th>
+                                    <th>Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+                    <div class="tabela-card">
+                        <h3>Top 10 Despesas</h3>
+                        <table id="tabelaTop10Despesas">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Descrição</th>
+                                    <th>Categoria</th>
+                                    <th>Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let charts = {};
+        let todosRelatorios = [];
+
+        // Preencher anos
+        const anoSelect = document.getElementById('filtroAno');
+        const currentYear = new Date().getFullYear();
+        for (let year = currentYear; year >= 2020; year--) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            anoSelect.appendChild(option);
+        }
+
+        async function carregarRelatorios() {
+            try {
+                const response = await fetch('/api/relatorios');
+                todosRelatorios = await response.json();
+                exibirRelatorios(todosRelatorios);
+            } catch (error) {
+                console.error('Erro ao carregar relatórios:', error);
+                document.getElementById('listaContainer').innerHTML =
+                    '<p style="color: #e74c3c;">Erro ao carregar relatórios</p>';
+            }
+        }
+
+        function filtrarRelatorios() {
+            const mes = document.getElementById('filtroMes').value;
+            const ano = document.getElementById('filtroAno').value;
+
+            let filtrados = todosRelatorios;
+
+            if (mes) {
+                filtrados = filtrados.filter(r => r.mesReferencia == mes);
+            }
+
+            if (ano) {
+                filtrados = filtrados.filter(r => r.anoReferencia == ano);
+            }
+
+            exibirRelatorios(filtrados);
+        }
+
+        function exibirRelatorios(relatorios) {
+            const container = document.getElementById('listaContainer');
+
+            if (relatorios.length === 0) {
+                container.innerHTML = `
+                    <div class="no-relatorios">
+                        <div class="no-relatorios-icon">&#128196;</div>
+                        <h3>Nenhum relatório encontrado</h3>
+                        <p>Envie um documento para gerar seu primeiro relatório</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = relatorios.map(r => `
+                <div class="relatorio-item" onclick="visualizarRelatorio(${r.id})">
+                    <div class="relatorio-item-info">
+                        <h3>${getNomeMes(r.mesReferencia)}/${r.anoReferencia}</h3>
+                        <div class="relatorio-item-meta">
+                            Gerado em: ${new Date(r.dataGeracao).toLocaleString('pt-BR')} •
+                            ${r.totalTransacoes} transações
+                        </div>
+                    </div>
+                    <button class="btn-visualizar">Visualizar</button>
+                </div>
+            `).join('');
+        }
+
+        async function visualizarRelatorio(id) {
+            try {
+                const response = await fetch(`/api/relatorios/${id}/dados`);
+                const dados = await response.json();
+
+                document.getElementById('tituloRelatorio').textContent =
+                    `${getNomeMes(dados.mesReferencia)}/${dados.anoReferencia}`;
+
+                // Atualizar KPIs
+                document.getElementById('kpiReceita').textContent = formatarMoeda(dados.metricas.receitaTotal);
+                document.getElementById('kpiDespesa').textContent = formatarMoeda(dados.metricas.despesaTotal);
+                document.getElementById('kpiSaldo').textContent = formatarMoeda(dados.metricas.saldo);
+                document.getElementById('kpiSaldo').className =
+                    'kpi-valor ' + (dados.metricas.saldo >= 0 ? 'kpi-positivo' : 'kpi-negativo');
+                document.getElementById('kpiMargem').textContent = dados.metricas.margemLucro + '%';
+
+                // Atualizar gráficos
+                criarGraficos(dados);
+
+                // Atualizar tabelas
+                preencherTop10(dados.top10Receitas, 'tabelaTop10Receitas');
+                preencherTop10(dados.top10Despesas, 'tabelaTop10Despesas');
+
+                // Mostrar dashboard
+                document.getElementById('dashboardSection').classList.add('show');
+                document.getElementById('dashboardSection').scrollIntoView({ behavior: 'smooth' });
+
+            } catch (error) {
+                console.error('Erro ao visualizar relatório:', error);
+                alert('Erro ao carregar dados do relatório');
+            }
+        }
+
+        function criarGraficos(dados) {
+            // Destruir gráficos anteriores
+            Object.values(charts).forEach(chart => chart.destroy());
+
+            // Gráfico Despesas por Categoria
+            const despesasCategoria = dados.porCategoria.filter(c => c.tipo === 'DESPESA');
+            charts.despesas = new Chart(document.getElementById('chartDespesasCategoria'), {
+                type: 'pie',
+                data: {
+                    labels: despesasCategoria.map(c => c.categoria),
+                    datasets: [{
+                        data: despesasCategoria.map(c => c.total),
+                        backgroundColor: ['#e74c3c', '#e67e22', '#f39c12', '#f1c40f', '#16a085', '#27ae60', '#2980b9', '#8e44ad']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: true }
+            });
+
+            // Gráfico Receitas por Categoria
+            const receitasCategoria = dados.porCategoria.filter(c => c.tipo === 'RECEITA');
+            charts.receitas = new Chart(document.getElementById('chartReceitasCategoria'), {
+                type: 'pie',
+                data: {
+                    labels: receitasCategoria.map(c => c.categoria),
+                    datasets: [{
+                        data: receitasCategoria.map(c => c.total),
+                        backgroundColor: ['#27ae60', '#2ecc71', '#16a085', '#1abc9c', '#3498db', '#2980b9', '#9b59b6', '#8e44ad']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: true }
+            });
+
+            // Gráfico Receitas vs Despesas
+            charts.comparacao = new Chart(document.getElementById('chartReceitasDespesas'), {
+                type: 'bar',
+                data: {
+                    labels: ['Receitas', 'Despesas'],
+                    datasets: [{
+                        label: 'Valor (R$)',
+                        data: [dados.metricas.receitaTotal, dados.metricas.despesaTotal],
+                        backgroundColor: ['#27ae60', '#e74c3c']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function preencherTop10(itens, tabelaId) {
+            const tbody = document.querySelector(`#${tabelaId} tbody`);
+            tbody.innerHTML = itens.map(item => `
+                <tr>
+                    <td>${new Date(item.data).toLocaleDateString('pt-BR')}</td>
+                    <td>${item.descricao}</td>
+                    <td>${item.categoria}</td>
+                    <td class="${item.tipo === 'RECEITA' ? 'valor-positivo' : 'valor-negativo'}">
+                        ${formatarMoeda(item.valor)}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function formatarMoeda(valor) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(valor);
+        }
+
+        function getNomeMes(num) {
+            const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                          'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+            return meses[num - 1];
+        }
+
+        // Carregar ao iniciar
+        carregarRelatorios();
+    </script>
+</body>
+</html>

@@ -37,6 +37,12 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
+    // File Processing - CSV and Excel
+    implementation 'com.opencsv:opencsv:5.9'
+    implementation 'org.apache.poi:poi:5.2.5'
+    implementation 'org.apache.poi:poi-ooxml:5.2.5'
+    implementation 'commons-io:commons-io:2.15.1'
+
     // Development Tools
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 

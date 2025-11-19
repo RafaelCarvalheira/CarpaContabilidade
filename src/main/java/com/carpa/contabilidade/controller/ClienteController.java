@@ -29,4 +29,32 @@ public class ClienteController {
 
         return "cliente/dashboard";
     }
+
+    /**
+     * Exibe a página de upload de documentos.
+     *
+     * @param authentication Informações do usuário autenticado
+     * @param model Model para passar dados para a view
+     * @return Nome da view de upload
+     */
+    @GetMapping("/upload-documento")
+    public String uploadDocumento(Authentication authentication, Model model) {
+        String email = authentication.getName();
+        model.addAttribute("email", email);
+        return "cliente/upload-documento";
+    }
+
+    /**
+     * Exibe a página de relatórios mensais.
+     *
+     * @param authentication Informações do usuário autenticado
+     * @param model Model para passar dados para a view
+     * @return Nome da view de relatórios
+     */
+    @GetMapping("/relatorios-mensais")
+    public String relatoriosMensais(Authentication authentication, Model model) {
+        String email = authentication.getName();
+        model.addAttribute("email", email);
+        return "cliente/relatorios-mensais";
+    }
 }

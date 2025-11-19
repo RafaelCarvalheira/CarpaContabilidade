@@ -1,0 +1,16 @@
+Data,Descrição,Categoria,Tipo,Valor,Forma_Pagamento,Centro_Custo,Observações
+01/05/2024,Venda de produtos - Cliente ABC,Vendas,Receita,15000.00,Transferência,Comercial,Pedido 123
+05/05/2024,Prestação de serviços consultoria,Serviços,Receita,8000.00,PIX,Comercial,Contrato mensal
+10/05/2024,Folha de pagamento - Equipe,Folha de Pagamento,Despesa,12000.00,Transferência,RH,Maio/2024
+12/05/2024,Venda atacado - Empresa XYZ,Vendas,Receita,22000.00,Boleto,Comercial,NF 456
+15/05/2024,Aluguel escritório,Despesas Fixas,Despesa,3500.00,Débito Automático,Administrativo,Ref. Maio
+18/05/2024,Compra de material de escritório,Despesas Operacionais,Despesa,850.50,Cartão,Administrativo,Papelaria
+20/05/2024,Energia elétrica,Utilidades,Despesa,1200.75,Débito Automático,Operacional,Abril/2024
+22/05/2024,Venda serviços - Cliente DEF,Serviços,Receita,5500.00,Cartão,Comercial,Projeto Beta
+23/05/2024,Fornecedor matéria-prima,Fornecedores,Despesa,6500.00,Transferência,Operacional,NF 789
+25/05/2024,Internet e telefonia,Utilidades,Despesa,450.00,Débito Automático,Administrativo,Maio/2024
+26/05/2024,Marketing digital - Anúncios,Marketing,Despesa,2500.00,Cartão,Comercial,Campanha Maio
+28/05/2024,Venda produtos varejo,Vendas,Receita,3200.00,PIX,Comercial,Vendas loja
+29/05/2024,Manutenção equipamentos,Despesas Operacionais,Despesa,1800.00,Transferência,Operacional,Preventiva
+30/05/2024,Comissões vendedores,Folha de Pagamento,Despesa,2200.00,Transferência,Comercial,Maio/2024
+31/05/2024,Venda serviços - Cliente GHI,Serviços,Receita,4500.00,Transferência,Comercial,Consultoria

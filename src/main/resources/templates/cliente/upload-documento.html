@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload de Documentos - Cliente</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <style>
+        .upload-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .upload-section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .upload-section h2 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .upload-section p {
+            color: #7f8c8d;
+            margin-bottom: 25px;
+        }
+
+        .drop-zone {
+            border: 3px dashed #3498db;
+            border-radius: 10px;
+            padding: 50px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+
+        .drop-zone:hover, .drop-zone.dragover {
+            background: #e3f2fd;
+            border-color: #2980b9;
+        }
+
+        .drop-zone-icon {
+            font-size: 64px;
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+
+        .drop-zone-text {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .drop-zone-hint {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-group select, .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group select:focus, .form-group input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .file-info {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .file-info.show {
+            display: block;
+        }
+
+        .btn-upload {
+            background: #27ae60;
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+        }
+
+        .btn-upload:hover {
+            background: #229954;
+        }
+
+        .btn-upload:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .documentos-list {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .documento-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+            transition: background 0.3s;
+        }
+
+        .documento-item:hover {
+            background: #f8f9fa;
+        }
+
+        .documento-info {
+            flex: 1;
+        }
+
+        .documento-nome {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .documento-meta {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .documento-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 15px;
+        }
+
+        .status-processado {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-processando {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-pendente {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .status-erro {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="dashboard-page">
+    <!-- Barra de navegação superior -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <h2>CARPA Contabilidade</h2>
+        </div>
+        <div class="navbar-user">
+            <span class="user-badge cliente-badge">Cliente</span>
+            <span class="user-email" th:text="${email}"></span>
+            <form th:action="@{/logout}" method="post" class="logout-form">
+                <button type="submit" class="btn-logout">Sair</button>
+            </form>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Menu lateral -->
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <h3>Menu</h3>
+                <ul>
+                    <li class="menu-item" onclick="window.location.href='/cliente/dashboard'">
+                        <span class="menu-icon">&#128200;</span>
+                        <span>Início</span>
+                    </li>
+                    <li class="menu-item active">
+                        <span class="menu-icon">&#128193;</span>
+                        <span>Enviar Documento</span>
+                    </li>
+                    <li class="menu-item" onclick="window.location.href='/cliente/relatorios-mensais'">
+                        <span class="menu-icon">&#128202;</span>
+                        <span>Relatórios Mensais</span>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Conteúdo principal -->
+        <main class="main-content">
+            <div class="upload-container">
+                <div class="upload-section">
+                    <h2>&#128193; Enviar Documento Contábil</h2>
+                    <p>Faça upload do seu arquivo CSV ou Excel contendo os dados contábeis do mês</p>
+
+                    <div id="alert-container"></div>
+
+                    <form id="uploadForm">
+                        <!-- Drag and Drop Area -->
+                        <div class="drop-zone" id="dropZone">
+                            <div class="drop-zone-icon">&#128206;</div>
+                            <div class="drop-zone-text">Arraste e solte seu arquivo aqui</div>
+                            <div class="drop-zone-hint">ou clique para selecionar (CSV, XLS, XLSX - máx 10MB)</div>
+                            <input type="file" id="fileInput" class="file-input" accept=".csv,.xlsx,.xls">
+                        </div>
+
+                        <div id="fileInfo" class="file-info">
+                            <strong>Arquivo selecionado:</strong> <span id="fileName"></span><br>
+                            <strong>Tamanho:</strong> <span id="fileSize"></span>
+                        </div>
+
+                        <!-- Mês e Ano -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="mesReferencia">Mês de Referência *</label>
+                                <select id="mesReferencia" required>
+                                    <option value="">Selecione o mês</option>
+                                    <option value="1">Janeiro</option>
+                                    <option value="2">Fevereiro</option>
+                                    <option value="3">Março</option>
+                                    <option value="4">Abril</option>
+                                    <option value="5">Maio</option>
+                                    <option value="6">Junho</option>
+                                    <option value="7">Julho</option>
+                                    <option value="8">Agosto</option>
+                                    <option value="9">Setembro</option>
+                                    <option value="10">Outubro</option>
+                                    <option value="11">Novembro</option>
+                                    <option value="12">Dezembro</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="anoReferencia">Ano de Referência *</label>
+                                <select id="anoReferencia" required>
+                                    <option value="">Selecione o ano</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-upload" id="btnUpload" disabled>
+                            Enviar Documento
+                        </button>
+
+                        <div class="loading" id="loadingIndicator">
+                            <div class="spinner"></div>
+                            <p>Processando arquivo...</p>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Lista de Documentos -->
+                <div class="documentos-list">
+                    <h2>&#128194; Meus Documentos Enviados</h2>
+                    <div id="documentosList">
+                        <p>Carregando documentos...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const uploadForm = document.getElementById('uploadForm');
+        const btnUpload = document.getElementById('btnUpload');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const alertContainer = document.getElementById('alert-container');
+        const anoSelect = document.getElementById('anoReferencia');
+
+        let selectedFile = null;
+
+        // Preencher anos (2020 até ano atual)
+        const currentYear = new Date().getFullYear();
+        for (let year = currentYear; year >= 2020; year--) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            anoSelect.appendChild(option);
+        }
+
+        // Drag and Drop
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileSelect(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileSelect(e.target.files[0]);
+            }
+        });
+
+        function handleFileSelect(file) {
+            const validTypes = ['text/csv', 'application/vnd.ms-excel',
+                                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+
+            if (!validTypes.includes(file.type) && !file.name.match(/\.(csv|xlsx|xls)$/i)) {
+                showAlert('Formato de arquivo inválido. Use CSV ou Excel.', 'error');
+                return;
+            }
+
+            if (file.size > 10 * 1024 * 1024) {
+                showAlert('Arquivo muito grande. Tamanho máximo: 10MB', 'error');
+                return;
+            }
+
+            selectedFile = file;
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+            fileInfo.classList.add('show');
+            btnUpload.disabled = false;
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' bytes';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+        }
+
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!selectedFile) {
+                showAlert('Selecione um arquivo', 'error');
+                return;
+            }
+
+            const mes = document.getElementById('mesReferencia').value;
+            const ano = document.getElementById('anoReferencia').value;
+
+            if (!mes || !ano) {
+                showAlert('Selecione o mês e ano de referência', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            formData.append('mesReferencia', mes);
+            formData.append('anoReferencia', ano);
+
+            btnUpload.disabled = true;
+            loadingIndicator.classList.add('show');
+
+            try {
+                const response = await fetch('/api/documentos/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showAlert('Documento enviado e processado com sucesso!', 'success');
+                    uploadForm.reset();
+                    fileInfo.classList.remove('show');
+                    selectedFile = null;
+                    loadDocumentos();
+                } else {
+                    showAlert(result.message || 'Erro ao enviar documento', 'error');
+                    btnUpload.disabled = false;
+                }
+            } catch (error) {
+                showAlert('Erro ao enviar documento: ' + error.message, 'error');
+                btnUpload.disabled = false;
+            } finally {
+                loadingIndicator.classList.remove('show');
+            }
+        });
+
+        function showAlert(message, type) {
+            alertContainer.innerHTML = `
+                <div class="alert alert-${type}">
+                    ${message}
+                </div>
+            `;
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 5000);
+        }
+
+        async function loadDocumentos() {
+            try {
+                const response = await fetch('/api/documentos');
+                const documentos = await response.json();
+
+                const lista = document.getElementById('documentosList');
+
+                if (documentos.length === 0) {
+                    lista.innerHTML = '<p style="color: #7f8c8d;">Nenhum documento enviado ainda.</p>';
+                    return;
+                }
+
+                lista.innerHTML = documentos.map(doc => `
+                    <div class="documento-item">
+                        <div class="documento-info">
+                            <div class="documento-nome">${doc.nomeArquivo}</div>
+                            <div class="documento-meta">
+                                ${doc.mesReferencia}/${doc.anoReferencia} •
+                                ${new Date(doc.dataUpload).toLocaleString('pt-BR')}
+                            </div>
+                        </div>
+                        <span class="documento-status status-${doc.status.toLowerCase()}">
+                            ${doc.status}
+                        </span>
+                        <button class="btn-delete" onclick="deleteDocumento(${doc.id})">
+                            Excluir
+                        </button>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Erro ao carregar documentos:', error);
+            }
+        }
+
+        async function deleteDocumento(id) {
+            if (!confirm('Tem certeza que deseja excluir este documento?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/documentos/${id}`, {
+                    method: 'DELETE'
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showAlert('Documento excluído com sucesso', 'success');
+                    loadDocumentos();
+                } else {
+                    showAlert(result.message || 'Erro ao excluir documento', 'error');
+                }
+            } catch (error) {
+                showAlert('Erro ao excluir documento: ' + error.message, 'error');
+            }
+        }
+
+        // Carregar documentos ao abrir a página
+        loadDocumentos();
+    </script>
+</body>
+</html>
