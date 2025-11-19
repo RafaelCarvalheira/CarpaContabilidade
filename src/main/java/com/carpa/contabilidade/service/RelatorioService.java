@@ -153,4 +153,14 @@ public class RelatorioService {
         return relatorioRepository.findByDocumento(documento)
             .orElseThrow(() -> new IllegalArgumentException("Relatório não encontrado para este documento"));
     }
+
+    /**
+     * Conta relatórios do mês atual (para admin).
+     */
+    public long contarRelatoriosDoMesAtual() {
+        java.time.LocalDateTime agora = java.time.LocalDateTime.now();
+        int mesAtual = agora.getMonthValue();
+        int anoAtual = agora.getYear();
+        return relatorioRepository.countByMesReferenciaAndAnoReferencia(mesAtual, anoAtual);
+    }
 }

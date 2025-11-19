@@ -60,4 +60,12 @@ public interface RelatorioRepository extends JpaRepository<Relatorio, Long> {
      * @return Lista com os últimos relatórios
      */
     List<Relatorio> findTop5ByUsuarioOrderByDataGeracaoDesc(Usuario usuario);
+
+    /**
+     * Conta relatórios por mês e ano de referência.
+     * @param mesReferencia Mês de referência
+     * @param anoReferencia Ano de referência
+     * @return Quantidade de relatórios no período
+     */
+    long countByMesReferenciaAndAnoReferencia(Integer mesReferencia, Integer anoReferencia);
 }

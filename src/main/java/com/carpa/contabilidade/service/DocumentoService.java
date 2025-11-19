@@ -158,6 +158,21 @@ public class DocumentoService {
     }
 
     /**
+     * Conta total de documentos de um usuário.
+     */
+    public long contarDocumentosDoUsuario(Usuario usuario) {
+        return documentoRepository.countByUsuario(usuario);
+    }
+
+    /**
+     * Conta documentos pendentes de processamento (admin).
+     */
+    public long contarDocumentosPendentes() {
+        return documentoRepository.countByStatus(Documento.StatusProcessamento.PENDENTE) +
+               documentoRepository.countByStatus(Documento.StatusProcessamento.PROCESSANDO);
+    }
+
+    /**
      * Valida o upload do arquivo.
      */
     private void validarUpload(MultipartFile file, Usuario usuario,

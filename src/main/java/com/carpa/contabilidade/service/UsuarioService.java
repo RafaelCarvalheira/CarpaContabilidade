@@ -114,4 +114,12 @@ public class UsuarioService {
         }
         usuarioRepository.deleteById(id);
     }
+
+    /**
+     * Conta total de clientes cadastrados.
+     * @return Quantidade de usuários do tipo CLIENTE
+     */
+    public long contarClientes() {
+        return usuarioRepository.countByTipoUsuario(com.carpa.contabilidade.model.TipoUsuario.CLIENTE);
+    }
 }

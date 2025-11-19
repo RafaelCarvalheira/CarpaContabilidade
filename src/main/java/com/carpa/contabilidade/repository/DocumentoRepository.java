@@ -55,4 +55,18 @@ public interface DocumentoRepository extends JpaRepository<Documento, Long> {
      * @return Lista ordenada de documentos
      */
     List<Documento> findByUsuarioOrderByDataUploadDesc(Usuario usuario);
+
+    /**
+     * Conta total de documentos de um usuário.
+     * @param usuario Usuário proprietário
+     * @return Quantidade de documentos
+     */
+    long countByUsuario(Usuario usuario);
+
+    /**
+     * Conta documentos por status.
+     * @param status Status do documento
+     * @return Quantidade de documentos com o status
+     */
+    long countByStatus(Documento.StatusProcessamento status);
 }

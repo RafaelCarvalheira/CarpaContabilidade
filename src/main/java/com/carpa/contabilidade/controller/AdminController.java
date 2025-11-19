@@ -2,6 +2,8 @@ package com.carpa.contabilidade.controller;
 
 import com.carpa.contabilidade.model.TipoUsuario;
 import com.carpa.contabilidade.model.Usuario;
+import com.carpa.contabilidade.service.DocumentoService;
+import com.carpa.contabilidade.service.RelatorioService;
 import com.carpa.contabilidade.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -24,6 +26,8 @@ import java.util.List;
 public class AdminController {
 
     private final UsuarioService usuarioService;
+    private final DocumentoService documentoService;
+    private final RelatorioService relatorioService;
 
     /**
      * Exibe o dashboard do administrador.
@@ -36,8 +40,17 @@ public class AdminController {
     public String dashboard(Authentication authentication, Model model) {
         // Obtém o email do usuário autenticado
         String email = authentication.getName();
+
+        // Busca estatísticas reais
+        long totalClientes = usuarioService.contarClientes();
+        long documentosPendentes = documentoService.contarDocumentosPendentes();
+        long relatoriosDoMes = relatorioService.contarRelatoriosDoMesAtual();
+
         model.addAttribute("email", email);
         model.addAttribute("tipoUsuario", "Administrador");
+        model.addAttribute("totalClientes", totalClientes);
+        model.addAttribute("documentosPendentes", documentosPendentes);
+        model.addAttribute("relatoriosDoMes", relatoriosDoMes);
 
         return "admin/dashboard";
     }

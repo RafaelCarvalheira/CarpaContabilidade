@@ -1,5 +1,6 @@
 package com.carpa.contabilidade.repository;
 
+import com.carpa.contabilidade.model.TipoUsuario;
 import com.carpa.contabilidade.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -25,4 +26,11 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
      * @return true se existe, false caso contrário
      */
     boolean existsByEmail(String email);
+
+    /**
+     * Conta usuários por tipo.
+     * @param tipoUsuario Tipo de usuário
+     * @return Quantidade de usuários do tipo especificado
+     */
+    long countByTipoUsuario(TipoUsuario tipoUsuario);
 }
