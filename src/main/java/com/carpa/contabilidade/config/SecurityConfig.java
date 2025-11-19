@@ -76,6 +76,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         // Permite acesso público aos recursos estáticos, landing page e login
                         .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/login").permitAll()
+                        // API de contato público
+                        .requestMatchers("/api/contato/**").permitAll()
                         // Apenas ADMIN pode acessar rotas /admin/** e página de gerenciamento
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/gerenciar-usuarios.html").hasRole("ADMIN")

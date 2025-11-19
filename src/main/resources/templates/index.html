@@ -212,14 +212,15 @@
                 </div>
                 <div class="contact-form">
                     <h3>Envie uma Mensagem</h3>
-                    <form>
+                    <div id="mensagem-feedback" class="alert" style="display: none;"></div>
+                    <form id="formContato">
                         <div class="form-row">
-                            <input type="text" placeholder="Seu Nome" required>
-                            <input type="email" placeholder="Seu Email" required>
+                            <input type="text" id="nome" name="nome" placeholder="Seu Nome" required>
+                            <input type="email" id="email" name="email" placeholder="Seu Email" required>
                         </div>
-                        <input type="text" placeholder="Assunto" required>
-                        <textarea placeholder="Sua Mensagem" rows="5" required></textarea>
-                        <button type="submit" class="btn-submit">Enviar Mensagem</button>
+                        <input type="text" id="assunto" name="assunto" placeholder="Assunto" required>
+                        <textarea id="mensagem" name="mensagem" placeholder="Sua Mensagem" rows="5" required></textarea>
+                        <button type="submit" class="btn-submit" id="btnEnviar">Enviar Mensagem</button>
                     </form>
                 </div>
             </div>
@@ -260,7 +261,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 Carpa Contabilidade. Todos os direitos reservados.</p>
+                <p>&copy; 2025 Carpa Contabilidade. Todos os direitos reservados.</p>
             </div>
         </div>
     </footer>
@@ -284,6 +285,65 @@
                 header.classList.add('scrolled');
             } else {
                 header.classList.remove('scrolled');
+            }
+        });
+
+        // Formulário de contato
+        document.getElementById('formContato').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const btnEnviar = document.getElementById('btnEnviar');
+            const feedbackDiv = document.getElementById('mensagem-feedback');
+
+            // Coletar dados do formulário
+            const dados = {
+                nome: document.getElementById('nome').value,
+                email: document.getElementById('email').value,
+                assunto: document.getElementById('assunto').value,
+                mensagem: document.getElementById('mensagem').value
+            };
+
+            // Desabilitar botão durante envio
+            btnEnviar.disabled = true;
+            btnEnviar.textContent = 'Enviando...';
+
+            try {
+                const response = await fetch('/api/contato/enviar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dados)
+                });
+
+                const resultado = await response.json();
+
+                // Mostrar mensagem de feedback
+                feedbackDiv.style.display = 'block';
+                feedbackDiv.className = 'alert ' + (resultado.sucesso ? 'alert-success' : 'alert-error');
+                feedbackDiv.textContent = resultado.mensagem;
+
+                if (resultado.sucesso) {
+                    // Limpar formulário
+                    document.getElementById('formContato').reset();
+                }
+
+                // Scroll para a mensagem
+                feedbackDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            } catch (error) {
+                feedbackDiv.style.display = 'block';
+                feedbackDiv.className = 'alert alert-error';
+                feedbackDiv.textContent = 'Erro ao enviar mensagem. Por favor, tente novamente.';
+            } finally {
+                // Reabilitar botão
+                btnEnviar.disabled = false;
+                btnEnviar.textContent = 'Enviar Mensagem';
+
+                // Esconder mensagem após 5 segundos
+                setTimeout(() => {
+                    feedbackDiv.style.display = 'none';
+                }, 5000);
             }
         });
     </script>

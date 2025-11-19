@@ -7,7 +7,7 @@
 **Disciplina:** Laboratório de Programação II
 **Professor:** Cap Vanzan
 **Instituição:** Instituto Militar de Engenharia (IME)
-**Período:** 2024/2
+**Período:** 2025/1
 **Data de Entrega:** 19/11/2024
 
 ---
@@ -1707,3 +1707,282 @@ O sistema está **funcional, testado e pronto para uso**, atendendo às necessid
 **Data: 19/11/2024**
 
 ---
+
+---
+
+## 📧 8. SISTEMA DE ENVIO DE EMAILS
+
+### 8.1 Visão Geral
+
+O sistema possui integração com SMTP para envio de emails através do formulário de contato da landing page. A implementação utiliza Spring Mail com suporte para múltiplos provedores (Gmail, Mailtrap, etc.).
+
+### 8.2 Tecnologias Utilizadas
+
+- **Spring Boot Mail Starter** - Framework de envio de emails
+- **JavaMailSender** - Interface para envio de mensagens
+- **SMTP** - Protocolo de transferência de emails
+- **Gmail/Mailtrap** - Provedores SMTP suportados
+
+### 8.3 Arquitetura
+
+```
+Usuario (Landing Page)
+    ↓
+Formulário de Contato (HTML + JavaScript)
+    ↓
+ContatoController (REST API)
+    ↓
+EmailService (Envio SMTP)
+    ↓
+Servidor SMTP (Gmail/Mailtrap)
+    ↓
+Destinatário (rafinhadev24@gmail.com)
+```
+
+### 8.4 Modelo de Dados
+
+#### ContatoDTO
+```java
+public class ContatoDTO {
+    @NotBlank
+    @Size(min = 3, max = 100)
+    private String nome;
+
+    @NotBlank
+    @Email
+    private String email;
+
+    @NotBlank
+    @Size(min = 5, max = 200)
+    private String assunto;
+
+    @NotBlank
+    @Size(min = 10, max = 1000)
+    private String mensagem;
+}
+```
+
+### 8.5 Configuração SMTP
+
+#### application.properties
+
+**Desenvolvimento (Mailtrap):**
+```properties
+spring.mail.host=sandbox.smtp.mailtrap.io
+spring.mail.port=2525
+spring.mail.username=SEU-USERNAME
+spring.mail.password=SUA-SENHA
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+
+app.email.contato=rafinhadev24@gmail.com
+```
+
+**Produção (Gmail):**
+```properties
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=SEU-EMAIL@gmail.com
+spring.mail.password=SUA-SENHA-DE-APP
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.properties.mail.smtp.starttls.required=true
+spring.mail.properties.mail.smtp.ssl.trust=smtp.gmail.com
+
+app.email.contato=rafinhadev24@gmail.com
+```
+
+### 8.6 API Endpoint
+
+#### POST /api/contato/enviar
+
+Envia uma mensagem de contato por email.
+
+**Acesso:** Público (sem autenticação)
+
+**Request Body:**
+```json
+{
+  "nome": "João Silva",
+  "email": "joao@exemplo.com",
+  "assunto": "Solicitação de Orçamento",
+  "mensagem": "Gostaria de solicitar um orçamento para serviços de contabilidade."
+}
+```
+
+**Response (Sucesso - 200 OK):**
+```json
+{
+  "sucesso": true,
+  "mensagem": "Mensagem enviada com sucesso! Entraremos em contato em breve."
+}
+```
+
+**Response (Erro - 400 Bad Request):**
+```json
+{
+  "sucesso": false,
+  "mensagem": "Dados inválidos: email: Email inválido"
+}
+```
+
+**Response (Erro - 500 Internal Server Error):**
+```json
+{
+  "sucesso": false,
+  "mensagem": "Erro ao enviar mensagem. Por favor, tente novamente mais tarde."
+}
+```
+
+### 8.7 Validações
+
+O sistema valida os seguintes campos:
+
+| Campo | Validação | Mensagem de Erro |
+|-------|-----------|------------------|
+| nome | Obrigatório, 3-100 caracteres | "O nome é obrigatório" |
+| email | Obrigatório, formato válido | "Email inválido" |
+| assunto | Obrigatório, 5-200 caracteres | "O assunto é obrigatório" |
+| mensagem | Obrigatório, 10-1000 caracteres | "A mensagem é obrigatória" |
+
+### 8.8 Formato do Email Enviado
+
+```
+De: joao@exemplo.com
+Para: rafinhadev24@gmail.com
+Reply-To: joao@exemplo.com
+Assunto: Contato Site CARPA - Solicitação de Orçamento
+
+Nova mensagem de contato recebida:
+
+Nome: João Silva
+Email: joao@exemplo.com
+Assunto: Solicitação de Orçamento
+
+Mensagem:
+Gostaria de solicitar um orçamento para serviços de contabilidade.
+
+---
+Este email foi enviado através do formulário de contato do site CARPA Contabilidade.
+```
+
+### 8.9 Segurança
+
+**Configurações de Segurança Implementadas:**
+
+✅ **Endpoint Público:** Acesso liberado em SecurityConfig
+✅ **CSRF Desabilitado:** Apenas para `/api/**`
+✅ **Validação de Entrada:** Jakarta Validation em todos os campos
+✅ **Sanitização:** Prevenção de injection via validação
+✅ **Rate Limiting:** Recomendado implementar em produção
+✅ **SMTP Seguro:** TLS/STARTTLS habilitado
+
+**SecurityConfig.java:**
+```java
+.requestMatchers("/api/contato/**").permitAll()
+```
+
+### 8.10 Frontend
+
+#### HTML (index.html)
+
+```html
+<form id="formContato">
+    <div class="form-row">
+        <input type="text" id="nome" name="nome" placeholder="Seu Nome" required>
+        <input type="email" id="email" name="email" placeholder="Seu Email" required>
+    </div>
+    <input type="text" id="assunto" name="assunto" placeholder="Assunto" required>
+    <textarea id="mensagem" name="mensagem" placeholder="Sua Mensagem" rows="5" required></textarea>
+    <button type="submit" class="btn-submit" id="btnEnviar">Enviar Mensagem</button>
+</form>
+<div id="mensagem-feedback" class="alert" style="display: none;"></div>
+```
+
+#### JavaScript
+
+```javascript
+document.getElementById('formContato').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const dados = {
+        nome: document.getElementById('nome').value,
+        email: document.getElementById('email').value,
+        assunto: document.getElementById('assunto').value,
+        mensagem: document.getElementById('mensagem').value
+    };
+
+    const response = await fetch('/api/contato/enviar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dados)
+    });
+
+    const resultado = await response.json();
+    
+    // Exibir feedback visual
+    feedbackDiv.textContent = resultado.mensagem;
+    feedbackDiv.className = 'alert ' + (resultado.sucesso ? 'alert-success' : 'alert-error');
+});
+```
+
+### 8.11 Tratamento de Erros
+
+O sistema trata os seguintes tipos de erros:
+
+1. **Validação de Campos:** Retorna 400 com mensagem específica
+2. **Erro de Autenticação SMTP:** Retorna 500 com mensagem genérica
+3. **Timeout de Conexão:** Retorna 500 com mensagem genérica
+4. **Erro Geral:** Logs detalhados + mensagem amigável ao usuário
+
+**Logs:**
+```java
+log.info("Email de contato enviado com sucesso. Remetente: {}", contato.getEmail());
+log.error("Erro ao enviar email de contato: {}", e.getMessage(), e);
+```
+
+### 8.12 Configuração para Produção
+
+**Checklist para Deploy:**
+
+- [ ] Configurar email real (Gmail com senha de app)
+- [ ] Ativar verificação em 2 etapas do Gmail
+- [ ] Criar senha de aplicativo específica
+- [ ] Configurar variáveis de ambiente para credenciais
+- [ ] Implementar rate limiting
+- [ ] Configurar logs de auditoria
+- [ ] Testar envio de emails em produção
+- [ ] Configurar monitoramento de falhas
+
+**Variáveis de Ambiente (Recomendado):**
+```bash
+export MAIL_USERNAME=seu-email@gmail.com
+export MAIL_PASSWORD=sua-senha-de-app
+export MAIL_DESTINATION=rafinhadev24@gmail.com
+```
+
+**application-prod.properties:**
+```properties
+spring.mail.username=${MAIL_USERNAME}
+spring.mail.password=${MAIL_PASSWORD}
+app.email.contato=${MAIL_DESTINATION}
+```
+
+### 8.13 Testes
+
+**Teste Manual:**
+1. Acesse http://localhost:8080
+2. Role até a seção "Entre em Contato"
+3. Preencha o formulário
+4. Clique em "Enviar Mensagem"
+5. Verifique mensagem de sucesso
+6. Verifique email na inbox (Mailtrap ou Gmail)
+
+**Casos de Teste:**
+- ✅ Envio com dados válidos
+- ✅ Validação de email inválido
+- ✅ Validação de campos vazios
+- ✅ Validação de mensagem muito curta/longa
+- ✅ Feedback visual de sucesso
+- ✅ Feedback visual de erro
+- ✅ Limpeza automática do formulário

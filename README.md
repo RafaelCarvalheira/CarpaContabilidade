@@ -23,7 +23,7 @@
 **Orientador:** Cap Vanzan
 **Disciplina:** Laboratório de Programação II
 **Instituição:** Instituto Militar de Engenharia (IME)
-**Ano:** 2024
+**Ano:** 2025
 
 ---
 
@@ -64,6 +64,18 @@ Sistema web completo para gerenciamento de serviços contábeis, desenvolvido co
   - Top 10 receitas e despesas
   - Filtragem por mês e ano
 
+#### 📧 Landing Page e Contato
+- **Página Inicial Institucional**
+  - Design moderno e responsivo
+  - Apresentação de serviços
+  - Informações sobre a empresa
+
+- **Formulário de Contato**
+  - Envio de mensagens via email
+  - Validação de campos em tempo real
+  - Feedback visual de sucesso/erro
+  - Integração com SMTP (Gmail/Mailtrap)
+
 ---
 
 ## 🚀 Tecnologias Utilizadas
@@ -73,6 +85,7 @@ Sistema web completo para gerenciamento de serviços contábeis, desenvolvido co
 - **Spring Boot 3.2.5** - Framework principal
 - **Spring Security** - Autenticação e autorização
 - **Spring Data JPA** - Persistência de dados
+- **Spring Mail** - Envio de emails SMTP
 - **Hibernate** - ORM (Object-Relational Mapping)
 - **PostgreSQL** - Banco de dados relacional
 
@@ -179,7 +192,7 @@ CREATE DATABASE carpa_contabilidade;
 \q
 ```
 
-#### 3. Configurar Credenciais (se necessário)
+#### 3. Configurar Credenciais do Banco (se necessário)
 Edite `src/main/resources/application.properties`:
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/carpa_contabilidade
@@ -187,7 +200,25 @@ spring.datasource.username=postgres
 spring.datasource.password=postgres
 ```
 
-#### 4. Compilar o Projeto
+#### 4. Configurar Email SMTP (Formulário de Contato)
+O sistema possui um formulário de contato que envia emails. Escolha uma das opções:
+
+**Opção A - Mailtrap (Recomendado para Desenvolvimento):**
+1. Crie conta gratuita em https://mailtrap.io
+2. Acesse "Email Testing" → "Inboxes" → "My Inbox"
+3. Copie as credenciais SMTP
+4. No `application.properties`, configure:
+```properties
+spring.mail.username=SEU-USERNAME-MAILTRAP
+spring.mail.password=SUA-SENHA-MAILTRAP
+```
+
+**Opção B - Gmail (Para Produção):**
+1. Ative verificação em 2 etapas: https://myaccount.google.com/security
+2. Crie senha de app: https://myaccount.google.com/apppasswords
+3. No `application.properties`, descomente as linhas do Gmail e comente as do Mailtrap
+
+#### 5. Compilar o Projeto
 **Windows:**
 ```bash
 gradlew.bat clean build
@@ -198,7 +229,7 @@ gradlew.bat clean build
 ./gradlew clean build
 ```
 
-#### 5. Executar a Aplicação
+#### 6. Executar a Aplicação
 **Windows:**
 ```bash
 gradlew.bat bootRun
@@ -209,7 +240,7 @@ gradlew.bat bootRun
 ./gradlew bootRun
 ```
 
-#### 6. Acessar o Sistema
+#### 7. Acessar o Sistema
 ```
 http://localhost:8080
 ```
@@ -270,6 +301,9 @@ Um arquivo de exemplo está incluído: `exemplo_dados_maio_2024.csv`
 - `GET /api/relatorios` - Listar relatórios (com filtros)
 - `GET /api/relatorios/{id}/dados` - Dados completos do relatório
 - `GET /api/relatorios/recentes` - Últimos 5 relatórios
+
+#### Contato (PÚBLICO)
+- `POST /api/contato/enviar` - Enviar mensagem de contato por email
 
 **Documentação completa:** Ver arquivo `DOCUMENTACAO_PROJETO.md`
 
